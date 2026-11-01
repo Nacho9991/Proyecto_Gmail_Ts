@@ -1,0 +1,26 @@
+{
+  "name": "proyecto_gmail_ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+    "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nacho9991/Proyecto_Gmail_Ts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Nacho9991/Proyecto_Gmail_Ts/issues"
+  },
+  "homepage": "https://github.com/Nacho9991/Proyecto_Gmail_Ts#readme",
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}
