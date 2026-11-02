@@ -1,6 +1,7 @@
 import { describe, test, expect } from "vitest"
 import {Contacto} from "../src/Contacto"
 
+//RF-03: Gestion de contactos
 describe("Contacto", () => {
     test("guarda el nombre y el email", () => {
      const c = new Contacto ("Exequiel Zeballos","exequiel@edu.ar")
