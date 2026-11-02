@@ -17,7 +17,7 @@ export class Contacto {
 
     esValido(): boolean {
         const nombreValido = this.getNombre().length > 0
-        const emailValido = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(this.getEmail())
+        const emailValido = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(this.getEmail()) // sirve exclusivamente para validar que el email tenga un formato correcto
         return nombreValido && emailValido
     }
 

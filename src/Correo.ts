@@ -11,11 +11,11 @@ export class Correo {
     private favorito: boolean = false
 
     constructor(asunto: string, cuerpo: string, remitente: Contacto, destinatarios: Contacto[]) {
-       this.id = Correo.siguienteId++
-       this.asunto = asunto.trim()
+       this.id = Correo.siguienteId++ // significa sumarle 1 al valor que tiene la variable 
+       this.asunto = asunto.trim() // borra los espacios en blanco que esten en el string
        this.cuerpo = cuerpo
        this.remitente = remitente
-       this.destinatarios = [...destinatarios]
+       this.destinatarios = [...destinatarios] //sirve para crear una copia exacta del array original en un lugar nuevo de la memoria
     }
 
     getId(): number {
