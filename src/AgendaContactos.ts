@@ -12,10 +12,10 @@ export class AgendaContactos {
     }
 
     private normalizar(email: string): string{
-        return email.trim().toLowerCase() //fijarse que hace esto
+        return email.trim().toLowerCase() //sin espacios y en minusculas para comparar emails
     }
 
-        buscarPorEmail(email: string): Contacto | undefined {
+    buscarPorEmail(email: string): Contacto | undefined {
         return this.getContactos().find((c) => c.getEmail() === this.normalizar(email))
     }
 
@@ -27,13 +27,14 @@ export class AgendaContactos {
     }
     
     modificar(emailActual: string, nuevo: Contacto): boolean {
-        const existe = this.buscarPorEmail(emailActual) !== undefined //fijarse
+        const existe = this.buscarPorEmail(emailActual) !== undefined //true si el contacto esta en la agenda
         const mismoEmail = nuevo.getEmail() === this.normalizar(emailActual)
         const emailLibre = mismoEmail  || this.buscarPorEmail(nuevo.getEmail())=== undefined
         const puedeModificar = existe && nuevo.esValido() && emailLibre
         puedeModificar && this.setContactos(
                         this.getContactos().map((c) => c.getEmail() === this.normalizar(emailActual) ? nuevo : c)
         )
+        return puedeModificar
     }
 
     eliminar(email: string): boolean {

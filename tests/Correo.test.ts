@@ -7,9 +7,11 @@ const martin = new Contacto("Martin Palermo", "martin@edu.ar")
 const roberto = new Contacto("Roberto Abbondanzieri", "pato@edu.ar")
 const invalido = new Contacto("Mal", "no-es-un-mail")
 
+
+//RF-01: Creacion de correos electronicos
 describe("Correo", () => {
 
-    //Este es el RF-01
+    
     test("guarda el asunto, el cuerpo, el remitente y los destinatrios", () => {
         const c = new Correo ("Examen", "El examen es el viernes 13", exequiel,[martin,roberto])
             expect(c.getAsunto()).toBe("Examen")
