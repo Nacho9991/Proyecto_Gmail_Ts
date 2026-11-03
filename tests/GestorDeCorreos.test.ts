@@ -28,4 +28,23 @@ describe("GestorDeCorreos - RF-06", () => {
         expect(gestor.consultar(nombre)[0]).toBe(correo)
         expect(nombres.flatMap((n) => gestor.consultar(n))).toEqual([correo])
     })
+
+    test("no incorpora directamente en Eliminados y reserva los incompletos para Borradores", () => {
+        const gestor = new GestorDeCorreos()
+        expect(gestor.agregar(crearCorreo(), ELIMINADOS)).toBe(false)
+        expect(gestor.agregar(crearCorreo(""), ENTRADA)).toBe(false)
+        expect(gestor.agregar(crearCorreo(""), ENVIADOS)).toBe(false)
+        expect(gestor.agregar(crearCorreo(""), BORRADORES)).toBe(true)
+    })
+
+    test("consultar protege la lista y conserva los objetos", () => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo()
+        gestor.agregar(correo, ENTRADA)
+        const lista = gestor.consultar(ENTRADA) as Correo[]
+        lista.pop()
+        lista.push(crearCorreo())
+        expect(gestor.consultar(ENTRADA)).toEqual([correo])
+        expect(gestor.consultar(ENTRADA)[0]).toBe(correo)
+    })
 })
