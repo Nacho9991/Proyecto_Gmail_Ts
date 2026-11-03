@@ -13,6 +13,49 @@ const crearCorreo = (asunto = "Sprint 1") => {
 }
 
 describe("GestorDeCorreos - RF-06", () => {
+    test.each([
+        [ENTRADA, ENTRADA, true], [ENTRADA, ENVIADOS, false], [ENTRADA, BORRADORES, false],
+        [ENVIADOS, ENTRADA, false], [ENVIADOS, ENVIADOS, true], [ENVIADOS, BORRADORES, false],
+        [BORRADORES, ENTRADA, false], [BORRADORES, ENVIADOS, true], [BORRADORES, BORRADORES, true]
+    ] as const)("mover de %s a %s devuelve %s sin duplicar", (origen, destino, permitido) => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo()
+        gestor.agregar(correo, origen)
+        expect(gestor.mover(correo.getId(), destino)).toBe(permitido)
+        const ubicacion = permitido ? destino : origen
+        expect(gestor.consultar(ubicacion)[0]).toBe(correo)
+        expect(nombres.flatMap((n) => gestor.consultar(n))).toEqual([correo])
+    })
+
+    test("rechaza el traslado de un borrador invalido sin perderlo", () => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo("")
+        gestor.agregar(correo, BORRADORES)
+        expect(gestor.mover(correo.getId(), ENVIADOS)).toBe(false)
+        expect(gestor.consultar(BORRADORES)).toEqual([correo])
+        expect(gestor.consultar(ENVIADOS)).toEqual([])
+    })
+
+    test("mover un id inexistente no altera las bandejas", () => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo()
+        gestor.agregar(correo, ENTRADA)
+        nombres.forEach((n) => expect(gestor.mover(-1, n)).toBe(false))
+        expect(nombres.flatMap((n) => gestor.consultar(n))).toEqual([correo])
+    })
+
+    test("repetir un movimiento conserva una sola entrada y los demas correos", () => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo()
+        const otro = crearCorreo()
+        gestor.agregar(correo, BORRADORES)
+        gestor.agregar(otro, BORRADORES)
+        expect(gestor.mover(correo.getId(), ENVIADOS)).toBe(true)
+        expect(gestor.mover(correo.getId(), ENVIADOS)).toBe(true)
+        expect(gestor.consultar(BORRADORES)).toEqual([otro])
+        expect(gestor.consultar(ENVIADOS)).toEqual([correo])
+    })
+
     test("crea cuatro bandejas vacias e independientes por gestor", () => {
         const gestor = new GestorDeCorreos()
         nombres.forEach((nombre) => expect(gestor.consultar(nombre)).toEqual([]))
