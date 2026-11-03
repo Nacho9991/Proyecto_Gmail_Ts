@@ -13,6 +13,46 @@ const crearCorreo = (asunto = "Sprint 1") => {
 }
 
 describe("GestorDeCorreos - RF-06", () => {
+    test.each([ENTRADA, ENVIADOS, BORRADORES])("elimina y restaura desde %s sin perder la identidad ni el origen", (origen) => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo()
+        gestor.agregar(correo, origen)
+        expect(gestor.eliminar(correo.getId())).toBe(true)
+        expect(gestor.consultar(origen)).toEqual([])
+        expect(gestor.consultar(ELIMINADOS)[0]).toBe(correo)
+        expect(gestor.eliminar(correo.getId())).toBe(false)
+        expect(gestor.restaurar(correo.getId())).toBe(true)
+        expect(gestor.consultar(origen)[0]).toBe(correo)
+        expect(gestor.consultar(ELIMINADOS)).toEqual([])
+        expect(gestor.restaurar(correo.getId())).toBe(false)
+        expect(nombres.flatMap((n) => gestor.consultar(n))).toEqual([correo])
+    })
+
+    test("restaura borradores incompletos y no altera otro correo eliminado", () => {
+        const gestor = new GestorDeCorreos()
+        const borrador = crearCorreo("")
+        const recibido = crearCorreo()
+        gestor.agregar(borrador, BORRADORES)
+        gestor.agregar(recibido, ENTRADA)
+        gestor.eliminar(borrador.getId())
+        gestor.eliminar(recibido.getId())
+        expect(gestor.restaurar(borrador.getId())).toBe(true)
+        expect(gestor.consultar(BORRADORES)[0]).toBe(borrador)
+        expect(gestor.consultar(ELIMINADOS)).toEqual([recibido])
+        expect(gestor.restaurar(recibido.getId())).toBe(true)
+        expect(gestor.consultar(ENTRADA)[0]).toBe(recibido)
+    })
+
+    test("eliminar o restaurar ids inexistentes y restaurar activos no modifica nada", () => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo()
+        gestor.agregar(correo, ENTRADA)
+        expect(gestor.eliminar(-1)).toBe(false)
+        expect(gestor.restaurar(-1)).toBe(false)
+        expect(gestor.restaurar(correo.getId())).toBe(false)
+        expect(nombres.flatMap((n) => gestor.consultar(n))).toEqual([correo])
+    })
+
     test.each([
         [ENTRADA, ENTRADA, true], [ENTRADA, ENVIADOS, false], [ENTRADA, BORRADORES, false],
         [ENVIADOS, ENTRADA, false], [ENVIADOS, ENVIADOS, true], [ENVIADOS, BORRADORES, false],
