@@ -30,4 +30,20 @@ export class GestorDeCorreos {
         const datosPermitidos = destino === NombreBandeja.BORRADORES || correo.esValido()
         return sinUbicacion && destinoPermitido && datosPermitidos && this.getBandeja(destino).agregar(correo)
     }
+
+    mover(id: number, destino: NombreBandeja): boolean {
+        const origen = this.buscarUbicacion(id)
+        return origen !== undefined && (origen === destino || this.moverBorradorValido(id, origen, destino))
+    }
+
+    private moverBorradorValido(id: number, origen: NombreBandeja, destino: NombreBandeja): boolean {
+        return origen === NombreBandeja.BORRADORES && destino === NombreBandeja.ENVIADOS &&
+            this.consultar(origen).some((correo) => correo.getId() === id && correo.esValido()) &&
+            this.trasladar(id, origen, destino)
+    }
+
+    private trasladar(id: number, origen: NombreBandeja, destino: NombreBandeja): boolean {
+        const correo = this.consultar(origen).find((actual) => actual.getId() === id)
+        return correo !== undefined && this.getBandeja(destino).agregar(correo) && this.getBandeja(origen).quitar(id)
+    }
 }
