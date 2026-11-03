@@ -15,6 +15,13 @@ export class Bandeja {
         return [...this.correos]
     }
 
+    quitar(id: number): boolean {
+        const actuales = this.getCorreos()
+        const existe = actuales.some((correo) => correo.getId() === id)
+        existe && this.setCorreos(actuales.filter((correo) => correo.getId() !== id))
+        return existe
+    }
+
     private setCorreos(nuevosCorreos: Correo[]): void {
         this.correos = [...nuevosCorreos]
     }
