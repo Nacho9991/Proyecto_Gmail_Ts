@@ -28,6 +28,34 @@ describe("GestorDeCorreos - RF-06", () => {
         expect(nombres.flatMap((n) => gestor.consultar(n))).toEqual([correo])
     })
 
+    test.each([ENTRADA, ENVIADOS, BORRADORES])("mover a Eliminados desde %s tambien conserva el origen", (origen) => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo()
+        gestor.agregar(correo, origen)
+        expect(gestor.mover(correo.getId(), ELIMINADOS)).toBe(true)
+        expect(gestor.mover(correo.getId(), ELIMINADOS)).toBe(true)
+        nombres.filter((n) => n !== origen && n !== ELIMINADOS).forEach((n) => {
+            expect(gestor.mover(correo.getId(), n)).toBe(false)
+            expect(gestor.consultar(ELIMINADOS)).toEqual([correo])
+        })
+        expect(gestor.mover(correo.getId(), origen)).toBe(true)
+        expect(gestor.consultar(origen)[0]).toBe(correo)
+        expect(gestor.restaurar(correo.getId())).toBe(false)
+    })
+
+    test("un nuevo ciclo de eliminacion recuerda el origen mas reciente", () => {
+        const gestor = new GestorDeCorreos()
+        const correo = crearCorreo()
+        gestor.agregar(correo, BORRADORES)
+        gestor.eliminar(correo.getId())
+        gestor.restaurar(correo.getId())
+        gestor.mover(correo.getId(), ENVIADOS)
+        gestor.eliminar(correo.getId())
+        expect(gestor.restaurar(correo.getId())).toBe(true)
+        expect(gestor.consultar(ENVIADOS)[0]).toBe(correo)
+        expect(gestor.consultar(BORRADORES)).toEqual([])
+    })
+
     test("restaura borradores incompletos y no altera otro correo eliminado", () => {
         const gestor = new GestorDeCorreos()
         const borrador = crearCorreo("")
