@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest"
-import {Contacto} from "../src/Contacto"
-import {Correo} from "../src/Correo"
+import { Contacto } from "../src/Contacto"
+import { Correo } from "../src/Correo"
 
 const exequiel = new Contacto("Exequiel Zeballos", "exequiel@edu.ar")
 const martin = new Contacto("Martin Palermo", "martin@edu.ar")
