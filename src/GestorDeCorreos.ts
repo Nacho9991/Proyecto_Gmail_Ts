@@ -88,7 +88,7 @@ export class GestorDeCorreos {
         return correo.esValido() && (
             esBorrador
             ? this.moverBorradorValido(correo.getId(), NombreBandeja.BORRADORES, NombreBandeja.ENVIADOS)
-            : esNuevo && this.moverBorradorValido(correo.getId(), NombreBandeja.BORRADORES, NombreBandeja.ENVIADOS)
+            : esNuevo && this.agregar(correo, NombreBandeja.ENVIADOS)
         )
     }
 }
