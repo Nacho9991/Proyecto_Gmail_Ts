@@ -26,21 +26,21 @@ export class Filtro{
         return correos.filter((correo) => this.evaluar(correo))
     }
 
-   y(otro: Filtro): Filtro {
+   and(otro: Filtro): Filtro {
     return new Filtro(
         `${this.getNombre()} y ${otro.getNombre()}`,
         (correo) => this.evaluar(correo) && otro.evaluar(correo)
     )
    }
 
-    o(otro: Filtro): Filtro {
+    or(otro: Filtro): Filtro {
     return new Filtro(
         `${this.getNombre()} o ${otro.getNombre()}`,
         (correo) => this.evaluar(correo) || otro.evaluar(correo)
     )
    }
 
-    no(): Filtro {
+    not(): Filtro {
     return new Filtro(
         `no ${this.getNombre()}`,
         (correo) => !this.evaluar(correo)
