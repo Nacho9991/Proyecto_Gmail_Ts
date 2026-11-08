@@ -80,4 +80,15 @@ export class GestorDeCorreos {
         const correo = this.consultar(origen).find((actual) => actual.getId() === id)
         return correo !== undefined && this.getBandeja(destino).agregar(correo) && this.getBandeja(origen).quitar(id)
     }
+
+    enviar(correo: Correo): boolean {
+        const ubicacion = this.buscarUbicacion(correo.getId())
+        const esBorrador = ubicacion === NombreBandeja.BORRADORES
+        const esNuevo = ubicacion === undefined
+        return correo.esValido() && (
+            esBorrador
+            ? this.moverBorradorValido(correo.getId(), NombreBandeja.BORRADORES, NombreBandeja.ENVIADOS)
+            : esNuevo && this.agregar(correo, NombreBandeja.ENVIADOS)
+        )
+    }
 }
