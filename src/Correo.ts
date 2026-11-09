@@ -46,6 +46,10 @@ export class Correo {
         this.setLeido(true)
     }
 
+    marcarNoLeido(): void {
+        this.setLeido(false)
+    }
+
     private setLeido(leido: boolean): void {
         this.leido = leido
     }
