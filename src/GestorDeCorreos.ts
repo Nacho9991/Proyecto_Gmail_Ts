@@ -27,6 +27,10 @@ export class GestorDeCorreos {
         return this.getBandeja(nombre).getCorreos()
     }
 
+    obtenerNoLeidos(bandeja: NombreBandeja): ReadonlyArray<Correo> {
+        return this.consultar(bandeja).filter((correo) => !correo.estaLeido())
+    }
+
     private buscarUbicacion(id: number): NombreBandeja | undefined {
         return Object.values(NombreBandeja).find((nombre) =>
             this.consultar(nombre).some((correo) => correo.getId() === id)
