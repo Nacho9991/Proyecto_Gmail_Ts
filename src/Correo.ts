@@ -42,6 +42,14 @@ export class Correo {
         return this.leido
     }
 
+    marcarLeido(): void {
+        this.setLeido(true)
+    }
+
+    private setLeido(leido: boolean): void {
+        this.leido = leido
+    }
+
     esFavorito(): boolean {
         return this.favorito
     }
