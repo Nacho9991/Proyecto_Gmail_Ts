@@ -1,4 +1,6 @@
-export class Contacto {
+import type { IContacto } from "./interfaces/IContacto"
+
+export class Contacto implements IContacto {
     private readonly nombre: string
     private readonly email: string
 
