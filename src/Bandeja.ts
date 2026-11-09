@@ -5,7 +5,8 @@ export class Bandeja {
 
     agregar(correo: Correo): boolean {
         const correosActuales = this.getCorreos()
-        const existe = correosActuales.some((actual) => actual.getId() === correo.getId())
+        const existe = correosActuales.some(
+            (actual) => actual.getId() === correo.getId())
         const puedeAgregar = !existe
         puedeAgregar && this.setCorreos([...correosActuales, correo])
         return puedeAgregar
