@@ -90,3 +90,37 @@ test("Modificar la coleccion devuelta no afecta los filtros registrados", () => 
     copia.push(crearFiltro("Intruso"))
     expect(gestor.getFiltros()).toHaveLength(1)
 })
+
+//RF-05: Filtros complejos
+test("Filtro complejo: academicos importantes (dominio UCP y asunto co examen)", () => {
+    const gestor = new GestorDeFiltros()
+    const academicos = new Filtro("Dominio UCP", Predicados.deDominio("@ucp.edu.ar"))
+      .and(new Filtro("Asunto Examen", Predicados.asuntoContiene("Examen")))
+    const examenProfe = new Correo("Examen final", "Cuerpo", profe, [martin])
+    const examenAlumno = new Correo("Examen final", "Cuerpo", exequiel, [martin])
+    const avisoProfe = new Correo("Aviso", "Cuerpo", profe, [martin])
+    expect(gestor.registrar(academicos)).toBe(true)
+    expect(gestor.aplicar(academicos.getNombre(), [examenProfe, examenAlumno, avisoProfe])).toEqual([examenProfe])
+})
+
+test("Filtro complejo: pendientes de revision (no leido y contenido con entrega)", () => {
+    const gestor = new GestorDeFiltros()
+    const pendientes = new Filtro("No leidos", Predicados.noLeido())
+      .and(new Filtro("Contenido Entrega", Predicados.contenidoContiene("Entrega")))
+    const conEntrega = new Correo("Tarea", "Entrega pendiente", profe, [martin])
+    const sinEntrega = new Correo("Tarea", "Cuerpo", profe, [martin])
+    expect(gestor.registrar(pendientes)).toBe(true)
+    expect(gestor.aplicar(pendientes.getNombre(), [conEntrega, sinEntrega])).toEqual([conEntrega])
+})
+
+test("Filtro complejo: para seguimiento (proyecto o reunion, y no leido)", () => {
+    const gestor = new GestorDeFiltros()
+    const seguimiento = new Filtro("Asunto Proyecto", Predicados.asuntoContiene("Proyecto"))
+      .or(new Filtro("Asunto Reunion", Predicados.asuntoContiene("Reunion")))
+      .and(new Filtro("No leidos", Predicados.noLeido()))
+    const proyecto = new Correo("Proyecto final", "Cuerpo", profe, [martin])
+    const reunion = new Correo("Reunion del Lunes", "Cuerpo", exequiel, [martin])
+    const otro = new Correo("Hola", "Cuerpo", exequiel, [martin])
+    expect(gestor.registrar(seguimiento)).toBe(true)
+    expect(gestor.aplicar(seguimiento.getNombre(), [proyecto, reunion, otro])).toEqual([proyecto, reunion])
+})
