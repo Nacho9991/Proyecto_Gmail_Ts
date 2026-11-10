@@ -55,3 +55,25 @@ test("no edita un correo que esta en Entrada", () => {
     expect(gestor.consultar(NombreBandeja.ENTRADA)[0].getAsunto()).toBe("Original")
     expect(correo.getCuerpo()).toBe("Contenido original")
 })
+
+test("completa y envia un borrador inicialmente incompleto", () => {
+    const remitente = new Contacto("Giovanni Vanni", "gio@example.com")
+    const destinatario = new Contacto("Ignacio Cremona", "nacho@example.com")
+    const borrador = new Correo("", "Primer texto", remitente, [])
+    const gestor = new GestorDeCorreos()
+    const idOriginal = borrador.getId()
+
+    expect(gestor.guardarBorrador(borrador)).toBe(true)
+    expect(gestor.enviar(borrador)).toBe(false)
+    expect(gestor.consultar(NombreBandeja.BORRADORES)).toEqual([borrador])
+    expect(gestor.consultar(NombreBandeja.ENVIADOS)).toEqual([])
+
+    expect(gestor.editarBorrador(idOriginal, "Entrega", "Trabajo terminado", remitente, [destinatario])).toBe(true)
+    expect(gestor.enviar(borrador)).toBe(true)
+    expect(gestor.consultar(NombreBandeja.BORRADORES)).toEqual([])
+    expect(gestor.consultar(NombreBandeja.ENVIADOS)[0]).toBe(borrador)
+    expect(borrador.getId()).toBe(idOriginal)
+    expect(borrador.getAsunto()).toBe("Entrega")
+    expect(borrador.getCuerpo()).toBe("Trabajo terminado")
+    expect(borrador.getDestinatarios()).toEqual([destinatario])
+})
