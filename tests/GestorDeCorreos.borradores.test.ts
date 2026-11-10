@@ -77,3 +77,21 @@ test("completa y envia un borrador inicialmente incompleto", () => {
     expect(borrador.getCuerpo()).toBe("Trabajo terminado")
     expect(borrador.getDestinatarios()).toEqual([destinatario])
 })
+
+test("conserva la ultima version despues de varias ediciones", () => {
+    const remitente = new Contacto("Giovanni Vanni", "gio@example.com")
+    const borrador = new Correo("", "Texto inicial", remitente, [])
+    const gestor = new GestorDeCorreos()
+    const idOriginal = borrador.getId()
+    expect(gestor.guardarBorrador(borrador)).toBe(true)
+
+    expect(gestor.editarBorrador(idOriginal, "Primera version", "Primer cambio", remitente, [])).toBe(true)
+    expect(gestor.editarBorrador(idOriginal, "Version final", "Ultimo cambio", remitente, [])).toBe(true)
+
+    const borradores = gestor.consultar(NombreBandeja.BORRADORES)
+    expect(borradores).toHaveLength(1)
+    expect(borradores[0]).toBe(borrador)
+    expect(borradores[0].getId()).toBe(idOriginal)
+    expect(borradores[0].getAsunto()).toBe("Version final")
+    expect(borradores[0].getCuerpo()).toBe("Ultimo cambio")
+})
