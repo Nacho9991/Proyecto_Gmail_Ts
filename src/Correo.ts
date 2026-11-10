@@ -3,10 +3,10 @@ import {Contacto} from "./Contacto"
 export class Correo {
     private static siguienteId: number = 1
     private readonly id: number
-    private readonly asunto: string
-    private readonly cuerpo: string
-    private readonly remitente: Contacto
-    private readonly destinatarios: Contacto[]
+    private asunto: string
+    private cuerpo: string
+    private remitente: Contacto
+    private destinatarios: Contacto[]
     private leido: boolean = false
     private favorito: boolean = false
 
@@ -36,6 +36,29 @@ export class Correo {
 
     getDestinatarios(): ReadonlyArray<Contacto>{
         return [...this.destinatarios]
+    }
+
+    editar(asunto: string, cuerpo: string, remitente: Contacto, destinatarios: Contacto[]): void {
+        this.setAsunto(asunto)
+        this.setCuerpo(cuerpo)
+        this.setRemitente(remitente)
+        this.setDestinatarios(destinatarios)
+    }
+
+    private setAsunto(asunto: string): void {
+        this.asunto = asunto.trim()
+    }
+
+    private setCuerpo(cuerpo: string): void {
+        this.cuerpo = cuerpo
+    }
+
+    private setRemitente(remitente: Contacto): void {
+        this.remitente = remitente
+    }
+
+    private setDestinatarios(destinatarios: Contacto[]): void {
+        this.destinatarios = [...destinatarios]
     }
     
     estaLeido(): boolean {
