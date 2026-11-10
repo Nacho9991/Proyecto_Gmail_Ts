@@ -1,6 +1,7 @@
 import { Bandeja } from "./Bandeja"
 import { Correo } from "./Correo"
 import { NombreBandeja } from "./NombreBandeja"
+import type { Contacto } from "./Contacto"
 
 export class GestorDeCorreos {
     private readonly origenes: Map<number, NombreBandeja> = new Map()
@@ -46,6 +47,12 @@ export class GestorDeCorreos {
 
     guardarBorrador(correo: Correo): boolean {
         return this.agregar(correo, NombreBandeja.BORRADORES)
+    }
+
+    editarBorrador(id: number, asunto: string, cuerpo: string, remitente: Contacto, destinatarios: Contacto[]): boolean {
+        const borrador = this.consultar(NombreBandeja.BORRADORES).find((correo) => correo.getId() === id)
+        borrador !== undefined && borrador.editar(asunto, cuerpo, remitente, destinatarios)
+        return borrador !== undefined
     }
 
     mover(id: number, destino: NombreBandeja): boolean {
