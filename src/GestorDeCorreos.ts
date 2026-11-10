@@ -44,6 +44,10 @@ export class GestorDeCorreos {
         return sinUbicacion && destinoPermitido && datosPermitidos && this.getBandeja(destino).agregar(correo)
     }
 
+    guardarBorrador(correo: Correo): boolean {
+        return this.agregar(correo, NombreBandeja.BORRADORES)
+    }
+
     mover(id: number, destino: NombreBandeja): boolean {
         const origen = this.buscarUbicacion(id)
         return origen !== undefined && (origen === destino || this.cambiarBandeja(id, origen, destino))
