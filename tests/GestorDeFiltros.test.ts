@@ -92,13 +92,14 @@ test("Modificar la coleccion devuelta no afecta los filtros registrados", () => 
 })
 
 //RF-05: Filtros complejos
-test("Filtro complejo: academicos importantes (dominio UCP y asunto co examen)", () => {
+test("Filtro complejo: academicos importantes (dominio UCP y asunto con examen)", () => {
     const gestor = new GestorDeFiltros()
     const academicos = new Filtro("Dominio UCP", Predicados.deDominio("@ucp.edu.ar"))
       .and(new Filtro("Asunto Examen", Predicados.asuntoContiene("Examen")))
     const examenProfe = new Correo("Examen final", "Cuerpo", profe, [martin])
     const examenAlumno = new Correo("Examen final", "Cuerpo", exequiel, [martin])
     const avisoProfe = new Correo("Aviso", "Cuerpo", profe, [martin])
+    
     expect(gestor.registrar(academicos)).toBe(true)
     expect(gestor.aplicar(academicos.getNombre(), [examenProfe, examenAlumno, avisoProfe])).toEqual([examenProfe])
 })

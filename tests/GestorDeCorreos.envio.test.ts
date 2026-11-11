@@ -91,3 +91,12 @@ test("Un correo recibido en Entrada no se puede enviar", () => {
     expect(gestor.consultar(NombreBandeja.ENVIADOS)).toEqual([])
 })
 
+test("Enviar dos correos distintos a destinatarios distintos deja ambos en Enviados", () => {
+    const gestor = new GestorDeCorreos()
+    const paraMartin = new Correo("Hola Martin", "Cuerpo", exequiel, [martin])
+    const paraRoberto = new Correo("Hola Roberto", "Cuerpo", exequiel, [roberto])
+
+    expect(gestor.enviar(paraMartin)).toBe(true)
+    expect(gestor.enviar(paraRoberto)).toBe(true)
+    expect(gestor.consultar(NombreBandeja.ENVIADOS)).toEqual([paraMartin, paraRoberto])
+})

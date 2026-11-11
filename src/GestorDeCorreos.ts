@@ -32,6 +32,13 @@ export class GestorDeCorreos {
         return this.consultar(bandeja).filter((correo) => !correo.estaLeido())
     }
 
+    consultarFavoritos(): ReadonlyArray<Correo> {
+    return Object.values(NombreBandeja)
+        .filter((nombre) => nombre !== NombreBandeja.ELIMINADOS)
+        .flatMap((nombre) => this.consultar(nombre))
+        .filter((correo) => correo.esFavorito())
+    }
+
     private buscarUbicacion(id: number): NombreBandeja | undefined {
         return Object.values(NombreBandeja).find((nombre) =>
             this.consultar(nombre).some((correo) => correo.getId() === id)

@@ -81,6 +81,19 @@ export class Correo {
         return this.favorito
     }
 
+    marcarFavorito(): void {
+    this.setFavorito(true)
+    }
+
+    desmarcarFavorito(): void {
+    this.setFavorito(false)
+    }
+
+    private setFavorito(favorito: boolean): void {
+    this.favorito = favorito
+    }
+    
+
     esValido(): boolean {
         const asuntoValido = this.getAsunto().length > 0
         const remitenteValido = this.getRemitente().esValido()
