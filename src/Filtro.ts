@@ -1,7 +1,8 @@
 import type { Correo } from "./Correo"
 import type { Predicado } from "./Predicado"
-
-export class Filtro{
+import type { IFiltro } from "./IFiltro"
+import type { ICombinable } from "./ICombinable"
+export class Filtro implements IFiltro, ICombinable {
     private readonly nombre: string
     private readonly predicado: Predicado
 

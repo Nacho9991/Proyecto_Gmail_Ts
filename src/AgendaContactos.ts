@@ -1,6 +1,7 @@
 import {Contacto} from "./Contacto"
-
-export class AgendaContactos {
+import type { IConsultaContactos } from "./IConsultaContactos"
+import type { IAdministracionContactos } from "./IAdministracionContactos"
+export class AgendaContactos implements IConsultaContactos, IAdministracionContactos {
     private contactos: Contacto[] = []
 
     getContactos(): ReadonlyArray<Contacto>{
