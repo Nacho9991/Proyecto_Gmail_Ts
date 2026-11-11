@@ -1,6 +1,7 @@
+import type { IBuscador } from "./IBuscador"
 import type { Correo } from "./Correo"
 
-export class Buscador {
+export class Buscador implements IBuscador {
     buscar(texto: string, correos: ReadonlyArray<Correo>): ReadonlyArray<Correo> {
         const textoBuscado = texto.trim().toLowerCase()
         return correos.filter((correo) => this.coincide(correo, textoBuscado))  //mirar aca

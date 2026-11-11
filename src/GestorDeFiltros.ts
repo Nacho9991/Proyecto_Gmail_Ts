@@ -1,7 +1,7 @@
 import type { Correo } from "./Correo"
 import type { Filtro } from "./Filtro"
-
-export class GestorDeFiltros {
+import type { IGestorDeFiltros } from "./IGestorDeFiltros"
+export class GestorDeFiltros implements IGestorDeFiltros {
     private readonly maximo: number = 5
     private filtros: Filtro[] = []
 
