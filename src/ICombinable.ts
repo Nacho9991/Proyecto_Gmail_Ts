@@ -1,7 +1,7 @@
 import type { Filtro } from "./Filtro"
-
+import type { IFiltro } from "./IFiltro"
 export interface ICombinable {
-    and(otro: Filtro): Filtro
-    or(otro: Filtro): Filtro
+    and(otro: IFiltro): Filtro
+    or(otro: IFiltro): Filtro
     not(): Filtro
 }

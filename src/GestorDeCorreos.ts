@@ -2,8 +2,11 @@ import { Bandeja } from "./Bandeja"
 import { Correo } from "./Correo"
 import { NombreBandeja } from "./NombreBandeja"
 import type { Contacto } from "./Contacto"
+import type { IConsultaCorreos } from "./IConsultaCorreos"
+import type { IGestionBandejas } from "./IGestionBandejas"
+import type { IRedaccionCorreos } from "./IRedaccionCorreos"
 
-export class GestorDeCorreos {
+export class GestorDeCorreos implements IConsultaCorreos, IGestionBandejas, IRedaccionCorreos {
     private readonly origenes: Map<number, NombreBandeja> = new Map()
     private readonly bandejas: Record<NombreBandeja, Bandeja> = {
         [NombreBandeja.ENTRADA]: new Bandeja(),

@@ -1,15 +1,15 @@
 import type { Correo } from "./Correo"
-import type { Filtro } from "./Filtro"
+import type { IFiltro } from "./IFiltro"
 import type { IGestorDeFiltros } from "./IGestorDeFiltros"
 export class GestorDeFiltros implements IGestorDeFiltros {
     private readonly maximo: number = 5
-    private filtros: Filtro[] = []
+    private filtros: IFiltro[] = []
 
-    getFiltros(): ReadonlyArray<Filtro> {
+    getFiltros(): ReadonlyArray<IFiltro> {
         return [...this.filtros]
     }
 
-    private setFiltros(nuevosFiltros: Filtro[]): void {
+    private setFiltros(nuevosFiltros: IFiltro[]): void {
         this.filtros = [...nuevosFiltros]
     }
 
@@ -17,11 +17,11 @@ export class GestorDeFiltros implements IGestorDeFiltros {
         return this.maximo
     }
 
-    obtener(nombre: string): Filtro | undefined {
+    obtener(nombre: string): IFiltro | undefined {
         return this.getFiltros().find((filtro) => filtro.getNombre() === nombre.trim())
     }
 
-    registrar(filtro: Filtro): boolean {
+    registrar(filtro: IFiltro): boolean {
         const nombreValido = filtro.getNombre().length > 0
         const nombreLibre = this.obtener(filtro.getNombre()) === undefined
         const hayLugar = this.getFiltros().length < this.getMaximo()

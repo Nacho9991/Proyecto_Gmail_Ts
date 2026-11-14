@@ -27,14 +27,14 @@ export class Filtro implements IFiltro, ICombinable {
         return correos.filter((correo) => this.evaluar(correo))
     }
 
-   and(otro: Filtro): Filtro {
+   and(otro: IFiltro): Filtro {
     return new Filtro(
         `${this.getNombre()} y ${otro.getNombre()}`,
         (correo) => this.evaluar(correo) && otro.evaluar(correo)
     )
    }
 
-    or(otro: Filtro): Filtro {
+    or(otro: IFiltro): Filtro {
     return new Filtro(
         `${this.getNombre()} o ${otro.getNombre()}`,
         (correo) => this.evaluar(correo) || otro.evaluar(correo)
