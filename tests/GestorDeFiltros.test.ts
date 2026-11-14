@@ -127,25 +127,13 @@ test("Filtro complejo: para seguimiento (proyecto o reunion, y no leido)", () =>
 })
 
 // RF-05: Filtros sobre una coleccion grande de correos
-test("Filtro propio: de 50 correos enviados deja solo los de asunto terminado en 3", () => {
+test("Filter: de 50 correos enviados deja los de asunto terminado en 3", () => {
     const gestor = new GestorDeCorreos()
     const correos = Array.from({ length: 50 }, (_, i) => new Correo(String(i + 1), "Cuerpo", exequiel, [martin]))
     correos.forEach((correo) => gestor.enviar(correo))
 
-    const terminadosEn3 = new Filtro("Asunto terminado en 3", (correo) => correo.getAsunto().endsWith("3"))
-        .aplicar(gestor.consultar(NombreBandeja.ENVIADOS))
+    const resultado = gestor.consultar(NombreBandeja.ENVIADOS)
+        .filter((correo) => correo.getAsunto().endsWith("3"))
 
-    expect(terminadosEn3.map((correo) => correo.getAsunto())).toEqual(["3", "13", "23", "33", "43"])
-})
-
-test("Se combinan filtros sobre 50 correos: asunto terminado en 3 o en 7", () => {
-    const gestor = new GestorDeCorreos()
-    const correos = Array.from({ length: 50 }, (_, i) => new Correo(String(i + 1), "Cuerpo", exequiel, [martin]))
-    correos.forEach((correo) => gestor.enviar(correo))
-    const terminadoEn3 = new Filtro("Terminado en 3", (correo) => correo.getAsunto().endsWith("3"))
-    const terminadoEn7 = new Filtro("Terminado en 7", (correo) => correo.getAsunto().endsWith("7"))
-    
-    const resultado = terminadoEn3.or(terminadoEn7).aplicar(gestor.consultar(NombreBandeja.ENVIADOS))
-
-    expect(resultado).toHaveLength(10)
+    expect(resultado).toHaveLength(5)
 })

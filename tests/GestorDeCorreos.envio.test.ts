@@ -10,6 +10,7 @@ const exequiel = new Contacto("Exequiel", "exequiel@edu.ar")
 const martin = new Contacto("Martin", "martin@edu.ar")
 const roberto = new Contacto("Roberto", "pato@edu.ar")
 const invalido = new Contacto("", "no-es-un-email")
+const lucia = new Contacto("Lucia", "lucia@edu.ar")
 
 //RF-02: Envio de correos
 
@@ -99,4 +100,24 @@ test("Enviar dos correos distintos a destinatarios distintos deja ambos en Envia
     expect(gestor.enviar(paraMartin)).toBe(true)
     expect(gestor.enviar(paraRoberto)).toBe(true)
     expect(gestor.consultar(NombreBandeja.ENVIADOS)).toEqual([paraMartin, paraRoberto])
+})
+
+
+// RF-02 y RF-06: un correo enviado a varios destinatarios se elimina solo de la casilla de uno
+test("Un correo enviado a 3 destinatarios se elimina solo de la casilla de uno", () => {
+    const correo = new Correo("Hola", "Cuerpo", exequiel, [martin, roberto, lucia])
+    const casillaMartin = new GestorDeCorreos()
+    const casillaRoberto = new GestorDeCorreos()
+    const casillaLucia = new GestorDeCorreos()
+
+    casillaMartin.agregar(correo, NombreBandeja.ENTRADA)
+    casillaRoberto.agregar(correo, NombreBandeja.ENTRADA)
+    casillaLucia.agregar(correo, NombreBandeja.ENTRADA)
+
+    casillaMartin.eliminar(correo.getId())
+
+    expect(casillaMartin.consultar(NombreBandeja.ENTRADA)).toEqual([])
+    expect(casillaMartin.consultar(NombreBandeja.ELIMINADOS)).toEqual([correo])
+    expect(casillaRoberto.consultar(NombreBandeja.ENTRADA)).toEqual([correo])
+    expect(casillaLucia.consultar(NombreBandeja.ENTRADA)).toEqual([correo])
 })
