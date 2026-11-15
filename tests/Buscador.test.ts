@@ -46,6 +46,13 @@ test("Busca por el nombre de un destinatario", () => {
     expect(buscador.buscar("lopez", [paraProfe, paraMartin])).toEqual([paraProfe])
 })
 
+test("Busca por el email de un destinatario que no es el primero", () => {
+    const correo = new Correo("Aviso", "Cuerpo", exequiel, [martin, profe])
+    const otro = new Correo("Saludo", "Cuerpo", exequiel, [martin])
+
+    expect(buscador.buscar("profe@ucp.edu.ar", [correo, otro])).toEqual([correo])
+})
+
 test("La busqueda no distingue mayusculas de minusculas", () => {
     const examen = new Correo("Examen Final", "Cuerpo", profe, [martin])
     
