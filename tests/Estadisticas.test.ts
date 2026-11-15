@@ -57,3 +57,14 @@ test("Filtra los correos que cumplen una condicion", () => {
 
     expect(resultado).toEqual([noLeido])
 })
+
+test("Filtrar una coleccion vacia devuelve una coleccion vacia", () => {
+    const estadisticas = new Estadisticas()
+
+    const resultado = estadisticas.filtrar(
+        [],
+        (correo) => !correo.estaLeido()
+    )
+
+    expect(resultado).toEqual([])
+})
