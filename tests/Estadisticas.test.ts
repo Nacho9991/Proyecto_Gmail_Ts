@@ -40,3 +40,20 @@ test("Obtiene solo los asuntos de la bandeja consultada", () => {
 
     expect(estadisticas.asuntos(correos)).toEqual(["Consulta"])
 })
+
+test("Filtra los correos que cumplen una condicion", () => {
+    const remitente = new Contacto("Giovanni", "gio@example.com")
+    const destinatario = new Contacto("Ignacio", "ignacio@example.com")
+    const leido = new Correo("Consulta", "Cuerpo", remitente, [destinatario])
+    const noLeido = new Correo("Entrega", "Cuerpo", remitente, [destinatario])
+    const estadisticas = new Estadisticas()
+
+    leido.marcarLeido()
+
+    const resultado = estadisticas.filtrar(
+        [leido, noLeido],
+        (correo) => !correo.estaLeido()
+    )
+
+    expect(resultado).toEqual([noLeido])
+})
