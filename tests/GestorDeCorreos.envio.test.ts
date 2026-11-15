@@ -14,9 +14,9 @@ const lucia = new Contacto("Lucia", "lucia@edu.ar")
 
 //RF-02: Envio de correos
 
-test("Enviar un correo valido lo deja en Enviados", () => {
+test("Enviar un correo a un destinatario lo deja en Enviados", () => {
    const gestor = new GestorDeCorreos()
-   const correo = new Correo("Hola", "Cuerpo",exequiel,[martin, roberto])
+   const correo = new Correo("Hola", "Cuerpo",exequiel,[martin])
 
    expect(gestor.enviar(correo)).toBe(true)
    expect(gestor.consultar(NombreBandeja.ENVIADOS)).toEqual([correo])

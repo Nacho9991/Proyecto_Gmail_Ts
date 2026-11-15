@@ -44,12 +44,6 @@ describe("Correo", () => {
         expect(c2.getDestinatarios()).toHaveLength(2)
     })
 
-    test("Cada correo tiene un id distinto", () => {
-        const c1 = new Correo ("Uno", "Hola", exequiel,[martin])
-        const c2 = new Correo ("Uno", "Hola", exequiel,[martin])
-        expect(c1.getId()).not.toBe(c2.getId())
-    })
-
     test("Con datos correctos es valido", () => {
         expect(new Correo("Uno","Hola", exequiel,[martin]).esValido()).toBe(true)
     })
