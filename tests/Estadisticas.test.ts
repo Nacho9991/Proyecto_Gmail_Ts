@@ -16,3 +16,9 @@ test("Obtiene los asuntos de una coleccion de correos", () => {
         "Entrega del trabajo"
     ])
 })
+
+test("Devuelve una lista de asuntos vacia cuando no hay correos", () => {
+    const estadisticas = new Estadisticas()
+
+    expect(estadisticas.asuntos([])).toEqual([])
+})
