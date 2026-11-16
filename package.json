@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-    "scripts": {
+  "scripts": {
     "test": "vitest run",
     "typecheck": "tsc"
   },
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Nacho9991/Proyecto_Gmail_Ts#readme",
   "devDependencies": {
+    "@vitest/coverage-v8": "^5.0.5",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
   }

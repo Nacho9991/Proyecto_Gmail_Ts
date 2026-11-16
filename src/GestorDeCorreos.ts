@@ -5,14 +5,16 @@ import type { Contacto } from "./Contacto"
 import type { IConsultaCorreos } from "./IConsultaCorreos"
 import type { IGestionBandejas } from "./IGestionBandejas"
 import type { IRedaccionCorreos } from "./IRedaccionCorreos"
+import { BandejaDeEntrada } from "./BandejaDeEntrada"
+import { BandejaDeEnviados } from "./BandejaDeEnviados"
 
 export class GestorDeCorreos implements IConsultaCorreos, IGestionBandejas, IRedaccionCorreos {
     private readonly origenes: Map<number, NombreBandeja> = new Map()
     private readonly bandejas: Record<NombreBandeja, Bandeja> = {
-        [NombreBandeja.ENTRADA]: new Bandeja(),
-        [NombreBandeja.ENVIADOS]: new Bandeja(),
-        [NombreBandeja.BORRADORES]: new Bandeja(),
-        [NombreBandeja.ELIMINADOS]: new Bandeja()
+    [NombreBandeja.ENTRADA]: new BandejaDeEntrada(),
+    [NombreBandeja.ENVIADOS]: new BandejaDeEnviados(),
+    [NombreBandeja.BORRADORES]: new Bandeja(),
+    [NombreBandeja.ELIMINADOS]: new Bandeja()
     }
 
     private getBandeja(nombre: NombreBandeja): Bandeja {
@@ -49,12 +51,11 @@ export class GestorDeCorreos implements IConsultaCorreos, IGestionBandejas, IRed
     }
 
     agregar(correo: Correo, destino: NombreBandeja): boolean {
-        const sinUbicacion = this.buscarUbicacion(correo.getId()) === undefined
-        const destinoPermitido = destino !== NombreBandeja.ELIMINADOS
-        const datosPermitidos = destino === NombreBandeja.BORRADORES || correo.esValido()
-        return sinUbicacion && destinoPermitido && datosPermitidos && this.getBandeja(destino).agregar(correo)
+    const sinUbicacion = this.buscarUbicacion(correo.getId()) === undefined
+    const destinoPermitido = destino !== NombreBandeja.ELIMINADOS
+    return sinUbicacion && destinoPermitido && this.getBandeja(destino).agregar(correo)
     }
-
+ 
     guardarBorrador(correo: Correo): boolean {
         return this.agregar(correo, NombreBandeja.BORRADORES)
     }
