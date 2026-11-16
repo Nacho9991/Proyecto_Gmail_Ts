@@ -7,7 +7,7 @@ export class Bandeja {
         const correosActuales = this.getCorreos()
         const existe = correosActuales.some(
             (actual) => actual.getId() === correo.getId())
-        const puedeAgregar = !existe
+        const puedeAgregar = !existe && this.aceptaCorreo(correo) 
         puedeAgregar && this.setCorreos([...correosActuales, correo])
         return puedeAgregar
     }
@@ -15,6 +15,11 @@ export class Bandeja {
     getCorreos(): ReadonlyArray<Correo> {
         return [...this.correos]
     }
+
+    protected aceptaCorreo(_correo: Correo): boolean {
+        return true
+    }
+
 
     quitar(id: number): boolean {
         const actuales = this.getCorreos()
