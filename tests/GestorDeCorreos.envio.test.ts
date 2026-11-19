@@ -119,5 +119,7 @@ test("Un correo enviado a 3 destinatarios se elimina solo de la casilla de uno",
     expect(casillaMartin.consultar(NombreBandeja.ENTRADA)).toEqual([])
     expect(casillaMartin.consultar(NombreBandeja.ELIMINADOS)).toEqual([correo])
     expect(casillaRoberto.consultar(NombreBandeja.ENTRADA)).toEqual([correo])
+    expect(casillaRoberto.consultar(NombreBandeja.ELIMINADOS)).toEqual([])
     expect(casillaLucia.consultar(NombreBandeja.ENTRADA)).toEqual([correo])
+    expect(casillaLucia.consultar(NombreBandeja.ELIMINADOS)).toEqual([])
 })

@@ -17,6 +17,7 @@ const crearFiltro = (nombre: string) => new Filtro(nombre, () => true)
 test("Registrar un filtro valido lo guarda en el gestor", () => {
     const gestor = new GestorDeFiltros()
     const filtro = crearFiltro("Filtro 1")
+
     expect(gestor.registrar(filtro)).toBe(true)
     expect(gestor.getFiltros()).toEqual([filtro])
 })
@@ -24,6 +25,7 @@ test("Registrar un filtro valido lo guarda en el gestor", () => {
 test("No se puede registrar un filtro con un nombre repetido", () => {
     const gestor = new GestorDeFiltros()
     gestor.registrar(crearFiltro("Filtro 1"))
+
     expect(gestor.registrar(crearFiltro("Filtro 1"))).toBe(false)
     expect(gestor.getFiltros()).toHaveLength(1)
 })
@@ -36,6 +38,7 @@ test("no se puede registrar un filtro con nombre vacio", () => {
 
 test("Se pueden registrar hasta cinco filtros y el sexto se rechaza", () => {
     const gestor = new GestorDeFiltros()
+
     expect(gestor.registrar(crearFiltro("Filtro 1"))).toBe(true)
     expect(gestor.registrar(crearFiltro("Filtro 2"))).toBe(true)
     expect(gestor.registrar(crearFiltro("Filtro 3"))).toBe(true)
@@ -49,11 +52,13 @@ test("Obtener devuelve el filtro registrado con ese nombre", () => {
     const gestor = new GestorDeFiltros()
     const filtro = crearFiltro("Filtro 1")
     gestor.registrar(filtro)
+
     expect(gestor.obtener("Filtro 1")).toBe(filtro)
 })
 
 test("Obtener devuelve undefined cuando el filtro no existe", () => {
     const gestor = new GestorDeFiltros()
+
     expect(gestor.obtener("Inexistente")).toBeUndefined()
 })
 
@@ -62,12 +67,14 @@ test("Aplicar usa el filtro registrado sobre una coleccion de correos", () => {
     gestor.registrar(new Filtro("Examenes", Predicados.asuntoContiene("Examen")))
     const examen = new Correo("Examen final", "Cuerpo", exequiel, [martin])
     const saludo = new Correo("Hola", "Cuerpo", exequiel, [martin])
+
     expect(gestor.aplicar("Examenes", [examen, saludo])).toEqual([examen])
 })
 
 test("Aplicar con un nombre inexistente devuelve una coleccion vacia", () => {
     const gestor = new GestorDeFiltros()
     const correo = new Correo("Hola", "Cuerpo", exequiel, [martin])
+
     expect(gestor.aplicar("Inexistente", [correo])).toEqual([])
 })
 
@@ -79,6 +86,7 @@ test("Un mismo filtro se puede aplicar sobre distintas bandejas", () => {
     const examenEnviado = new Correo("Examen parcial", "Cuerpo", exequiel, [martin])
     bandejas.agregar(examenRecibido, NombreBandeja.ENTRADA)
     bandejas.agregar(examenEnviado, NombreBandeja.ENVIADOS)
+
     expect(gestor.aplicar("Examenes", bandejas.consultar(NombreBandeja.ENTRADA))).toEqual([examenRecibido])
     expect(gestor.aplicar("Examenes", bandejas.consultar(NombreBandeja.ENVIADOS))).toEqual([examenEnviado])
 })
@@ -88,6 +96,7 @@ test("Modificar la coleccion devuelta no afecta los filtros registrados", () => 
     gestor.registrar(crearFiltro("Filtro 1"))
     const copia = gestor.getFiltros() as Filtro[]
     copia.push(crearFiltro("Intruso"))
+
     expect(gestor.getFiltros()).toHaveLength(1)
 })
 
@@ -110,6 +119,7 @@ test("Filtro complejo: pendientes de revision (no leido y contenido con entrega)
       .and(new Filtro("Contenido Entrega", Predicados.contenidoContiene("Entrega")))
     const conEntrega = new Correo("Tarea", "Entrega pendiente", profe, [martin])
     const sinEntrega = new Correo("Tarea", "Cuerpo", profe, [martin])
+
     expect(gestor.registrar(pendientes)).toBe(true)
     expect(gestor.aplicar(pendientes.getNombre(), [conEntrega, sinEntrega])).toEqual([conEntrega])
 })
@@ -122,6 +132,7 @@ test("Filtro complejo: para seguimiento (proyecto o reunion, y no leido)", () =>
     const proyecto = new Correo("Proyecto final", "Cuerpo", profe, [martin])
     const reunion = new Correo("Reunion del Lunes", "Cuerpo", exequiel, [martin])
     const otro = new Correo("Hola", "Cuerpo", exequiel, [martin])
+    
     expect(gestor.registrar(seguimiento)).toBe(true)
     expect(gestor.aplicar(seguimiento.getNombre(), [proyecto, reunion, otro])).toEqual([proyecto, reunion])
 })
@@ -132,8 +143,15 @@ test("Filter: de 50 correos enviados deja los de asunto terminado en 3", () => {
     const correos = Array.from({ length: 50 }, (_, i) => new Correo(String(i + 1), "Cuerpo", exequiel, [martin]))
     correos.forEach((correo) => gestor.enviar(correo))
 
-    const resultado = gestor.consultar(NombreBandeja.ENVIADOS)
-        .filter((correo) => correo.getAsunto().endsWith("3"))
+    const enviados = gestor.consultar(NombreBandeja.ENVIADOS)
+    const terminadoEn3 = new Filtro("Asunto terminado en 3", (correo) => correo.getAsunto().endsWith("3"))
+    const resultado = terminadoEn3.aplicar(enviados)
 
+    expect(enviados).toHaveLength(50)
     expect(resultado).toHaveLength(5)
+    expect(resultado.map((correo) => correo.getAsunto())).toEqual(["3", "13", "23", "33", "43"])
+
+    const restantes = enviados.filter((correo) => !terminadoEn3.evaluar(correo))
+    
+    expect(resultado.length + restantes.length).toBe(enviados.length)
 })
