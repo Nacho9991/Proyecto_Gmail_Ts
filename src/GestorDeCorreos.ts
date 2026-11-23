@@ -107,14 +107,22 @@ export class GestorDeCorreos implements IConsultaCorreos, IGestionBandejas, IRed
         return correo !== undefined && this.getBandeja(destino).agregar(correo) && this.getBandeja(origen).quitar(id)
     }
 
-    enviar(correo: Correo): boolean {
+    enviar(correo: Correo, casillas?: ReadonlyMap<string, GestorDeCorreos>): boolean {
+        const destinos = casillas === undefined ? [] : [...new Set(
+            correo.getDestinatarios().map((destinatario) => casillas.get(destinatario.getEmail()))
+        )]
+        const destinosDisponibles = destinos.every((destino) =>
+            destino !== undefined && destino !== this && destino.buscarUbicacion(correo.getId()) === undefined
+        )
         const ubicacion = this.buscarUbicacion(correo.getId())
         const esBorrador = ubicacion === NombreBandeja.BORRADORES
         const esNuevo = ubicacion === undefined
-        return correo.esValido() && (
+        return correo.esValido() && destinosDisponibles && (
             esBorrador
             ? this.moverBorradorValido(correo.getId(), NombreBandeja.BORRADORES, NombreBandeja.ENVIADOS)
             : esNuevo && this.agregar(correo, NombreBandeja.ENVIADOS)
+        ) && destinos.every((destino) =>
+            destino !== undefined && destino.agregar(correo, NombreBandeja.ENTRADA)
         )
     }
 }

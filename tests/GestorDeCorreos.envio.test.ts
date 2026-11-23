@@ -109,17 +109,38 @@ test("Un correo enviado a 3 destinatarios se elimina solo de la casilla de uno",
     const casillaMartin = new GestorDeCorreos()
     const casillaRoberto = new GestorDeCorreos()
     const casillaLucia = new GestorDeCorreos()
+    const casillaExequiel = new GestorDeCorreos()
 
-    casillaMartin.agregar(correo, NombreBandeja.ENTRADA)
-    casillaRoberto.agregar(correo, NombreBandeja.ENTRADA)
-    casillaLucia.agregar(correo, NombreBandeja.ENTRADA)
+    const casillas = new Map<string, GestorDeCorreos>([
+        [martin.getEmail(), casillaMartin],
+        [roberto.getEmail(), casillaRoberto],
+        [lucia.getEmail(), casillaLucia],
+    ])
 
-    casillaMartin.eliminar(correo.getId())
-
-    expect(casillaMartin.consultar(NombreBandeja.ENTRADA)).toEqual([])
-    expect(casillaMartin.consultar(NombreBandeja.ELIMINADOS)).toEqual([correo])
+    expect(casillaExequiel.enviar(correo, casillas)).toBe(true)
+    expect(casillaExequiel.consultar(NombreBandeja.ENVIADOS)).toEqual([correo])
+    expect(casillaMartin.consultar(NombreBandeja.ENTRADA)).toEqual([correo])
     expect(casillaRoberto.consultar(NombreBandeja.ENTRADA)).toEqual([correo])
-    expect(casillaRoberto.consultar(NombreBandeja.ELIMINADOS)).toEqual([])
     expect(casillaLucia.consultar(NombreBandeja.ENTRADA)).toEqual([correo])
-    expect(casillaLucia.consultar(NombreBandeja.ELIMINADOS)).toEqual([])
+
+    const eliminado = casillaMartin.eliminar(correo.getId())
+
+    expect(eliminado).toBe(true)
+    expect(casillaMartin.consultar(NombreBandeja.ENTRADA))
+        .toEqual([])
+    expect(casillaMartin.consultar(NombreBandeja.ELIMINADOS))
+        .toEqual([correo])
+
+    expect(casillaRoberto.consultar(NombreBandeja.ENTRADA))
+        .toEqual([correo])
+    expect(casillaRoberto.consultar(NombreBandeja.ELIMINADOS))
+        .toEqual([])
+
+    expect(casillaLucia.consultar(NombreBandeja.ENTRADA))
+        .toEqual([correo])
+    expect(casillaLucia.consultar(NombreBandeja.ELIMINADOS))
+        .toEqual([])
+
+    expect(casillaExequiel.consultar(NombreBandeja.ENVIADOS))
+        .toEqual([correo])
 })
